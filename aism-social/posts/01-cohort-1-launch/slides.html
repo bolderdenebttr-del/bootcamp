@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<title>AISM · Post 01 · Cohort 1 launch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap" rel="stylesheet">
+<style>
+  /* Brand tokens, from aism.world. The site's display face is Loos; Roboto Flex is its own fallback. */
+  :root {
+    --bg: #FFF9E9; --card: #F5EDD6; --line: #E3D7B8;
+    --ink: #111113; --ink-2: #5F5B53;
+    --night: #0B0B0D; --night-2: #1C1C20; --night-line: #2E2E34; --night-text: #F2F1EC; --night-muted: #A3A3AC;
+    --blue: #030AE7; --blue-pale: #C9CCFF; --lemon: #F5EF30; --coral: #FF684B;
+    --f: "Roboto Flex", "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #8a8a8a; font-family: var(--f); display: grid; gap: 40px; justify-content: center; padding: 40px 0; }
+
+  /* 4:5 feed post. Keep text 88px from the sides: the 3:4 profile grid crops about 34px per side. */
+  .slide { width: 1080px; height: 1350px; position: relative; overflow: hidden; padding: 76px 88px 88px;
+           display: flex; flex-direction: column; background: var(--bg); color: var(--ink); }
+
+  .h   { font-weight: 470; font-stretch: 116%; text-transform: uppercase; letter-spacing: -0.02em; line-height: 0.98; }
+  .xl  { font-size: 112px; }
+  .l   { font-size: 80px; }
+  .lbl { font-size: 23px; font-weight: 560; font-stretch: 125%; letter-spacing: 0.15em; text-transform: uppercase; line-height: 1.35; }
+  .t   { font-size: 34px; line-height: 1.3; }
+
+  .bar    { display: flex; justify-content: space-between; align-items: center; min-height: 52px; margin-bottom: 60px; }
+  .logo   { width: 132px; height: 36px; }
+  .count  { color: var(--ink-2); }
+  .kicker { display: flex; align-items: center; gap: 14px; color: var(--ink-2); margin-bottom: 28px; }
+  .sq     { width: 14px; height: 14px; background: var(--coral); flex: none; }
+  .ico    { width: 1em; height: 1em; flex: none; }
+  .nw     { white-space: nowrap; }
+
+  /* 01 · cover */
+  .cover { background: var(--night); color: var(--night-text); }
+  .cover .art { position: absolute; inset: 0; background: url(../../brand/hero.webp) 56% 50% / cover no-repeat; }
+  .cover .art::after { content: ""; position: absolute; inset: 0; background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 .24'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
+      linear-gradient(180deg, rgba(11,11,13,.66) 0%, rgba(11,11,13,.08) 15%, rgba(11,11,13,.22) 27%, rgba(11,11,13,.74) 39%, rgba(11,11,13,.95) 56%, rgba(11,11,13,.98) 100%); }
+  .cover > :not(.art) { position: relative; }
+  .pill   { padding: 15px 24px 14px; border-radius: 999px; }
+  .lemon  { background: var(--lemon); color: var(--ink); }
+  .cover-main { margin-top: auto; }
+  .stats  { color: var(--night-muted); margin-top: 34px; line-height: 1.6; }
+  .stats b { color: var(--lemon); font-weight: 600; }
+  .cover h1 { text-shadow: 0 2px 28px rgba(0,0,0,.45); }
+  .deadline { margin-top: 46px; background: rgba(28,28,32,.94); border: 1px solid var(--night-line); border-radius: 30px;
+              padding: 34px 40px 36px; display: flex; justify-content: space-between; align-items: center; }
+  .deadline .lbl { color: var(--night-muted); }
+  .deadline .num { font-size: 74px; font-weight: 440; font-stretch: 110%; letter-spacing: -0.02em; line-height: 1; margin: 14px 0 14px; }
+  .deadline .t   { color: var(--night-muted); font-size: 31px; }
+  .swipe  { width: 100px; height: 100px; border-radius: 50%; background: var(--bg); color: var(--blue); display: grid; place-items: center; font-size: 46px; }
+
+  /* 02 · projects */
+  .projects { list-style: none; display: grid; gap: 16px; margin-top: 48px; }
+  .projects li { display: grid; grid-template-columns: 84px 1fr; background: var(--card); border: 1px solid var(--line); border-radius: 28px; padding: 34px 38px 36px; }
+  .no      { font-size: 23px; font-weight: 600; font-stretch: 125%; letter-spacing: 0.12em; color: var(--blue); padding-top: 9px; }
+  .projects h3 { font-size: 43px; font-weight: 520; font-stretch: 112%; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.05; }
+  .skills  { font-size: 32px; line-height: 1.25; color: var(--ink-2); margin-top: 10px; }
+  .out     { font-size: 35px; line-height: 1.2; color: var(--blue); font-weight: 540; margin-top: 12px; display: flex; align-items: center; gap: 12px; }
+  .foot    { margin-top: auto; padding-top: 28px; color: var(--ink-2); font-size: 32px; }
+
+  /* 03 · AI, mentors, college */
+  .card    { background: var(--card); border: 1px solid var(--line); border-radius: 30px; padding: 34px 40px 38px; }
+  .card + .card { margin-top: 20px; }
+  .card .lbl { color: var(--ink-2); margin-bottom: 12px; }
+  .card .t   { font-size: 34px; }
+  .card.ai { background: var(--blue); border-color: var(--blue); color: var(--bg); padding: 44px 44px 48px; }
+  .card.ai .lbl { color: var(--blue-pale); margin: 0; }
+  .card.ai .h   { font-size: 86px; margin: 22px 0 24px; }
+  .card.ai .t   { color: var(--blue-pale); font-size: 34px; }
+  .card.ai .rule { margin-top: 30px; padding-top: 26px; border-top: 1px solid rgba(201,204,255,.4); font-size: 36px; line-height: 1.25; font-weight: 560; }
+
+  /* 04 · who, schedule, needs, price */
+  .lead    { margin-top: 28px; color: var(--ink-2); }
+  .facts   { margin-top: auto; border-top: 1px solid var(--line); }
+  .facts > div { display: grid; grid-template-columns: 226px 1fr; gap: 20px; padding: 26px 0 27px; border-bottom: 1px solid var(--line); }
+  .facts dt { font-size: 23px; font-weight: 600; font-stretch: 125%; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-2); padding-top: 7px; }
+  .facts dd { font-size: 34px; line-height: 1.28; }
+  .price   { display: block; color: var(--blue); font-size: 54px; font-weight: 470; font-stretch: 110%; letter-spacing: -0.015em; line-height: 1.05; margin-bottom: 6px; }
+
+  /* 05 · apply */
+  .slide.blue { background: var(--blue); color: var(--bg); }
+  .blue .kicker, .blue .count { color: var(--blue-pale); }
+  .steps   { list-style: none; margin-top: 50px; border-top: 1px solid rgba(201,204,255,.4); }
+  .steps li { display: grid; grid-template-columns: 84px 1fr; padding: 28px 0 29px; border-bottom: 1px solid rgba(201,204,255,.4); font-size: 42px; line-height: 1.2; }
+  .steps .no { color: var(--blue-pale); padding-top: 11px; }
+  .note    { margin-top: 32px; color: var(--blue-pale); font-size: 32px; }
+  .cta     { margin-top: auto; background: var(--bg); color: var(--blue); border-radius: 999px; padding: 30px 34px 30px 44px;
+             display: flex; align-items: center; justify-content: space-between; }
+  .cta .lbl { font-size: 25px; font-weight: 620; }
+  .cta .url { display: flex; align-items: center; gap: 14px; font-size: 44px; font-weight: 540; font-stretch: 110%; letter-spacing: -0.01em; }
+  .sign    { margin-top: 30px; color: var(--blue-pale); text-align: center; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="aism-mark" viewBox="144 512 966 262"><path fill-rule="evenodd" d="M147.215,720.000 C146.746,763.032 196.922,768.601 227.000,752.270 C248.133,740.796 258.615,713.148 274.727,696.000 C282.984,687.212 293.673,680.564 306.000,680.530 C319.880,680.491 330.680,691.577 337.087,703.000 C349.640,725.378 366.702,751.002 393.000,758.217 C421.413,766.012 455.495,762.229 471.000,734.282 C474.816,727.405 477.039,717.896 476.418,710.000 C474.899,690.686 466.324,679.505 456.326,664.000 C451.616,656.696 445.895,649.960 442.407,642.000 C441.360,639.610 439.691,637.435 438.717,635.000 C434.024,623.266 430.453,611.447 427.845,599.000 C424.965,585.254 425.492,570.852 423.338,557.000 C421.074,542.434 413.601,526.804 399.000,520.907 C371.257,509.702 342.242,517.838 316.000,529.122 C290.184,540.223 267.251,561.052 247.000,580.127 C225.252,600.613 203.602,622.232 185.457,646.000 C170.474,665.625 147.494,694.424 147.215,720.000 Z M313.263,606.000 C313.428,616.392 324.361,619.486 333.000,617.249 C346.350,613.792 361.837,597.559 355.119,583.000 C352.028,576.301 342.456,577.553 337.000,579.164 C326.344,582.310 313.071,593.905 313.263,606.000 Z"></path>
+    <path fill-rule="evenodd" d="M454.807,590.000 C454.807,611.915 458.871,633.349 465.775,654.000 C467.811,660.091 471.551,665.349 474.458,671.000 C479.059,679.946 483.391,689.056 485.498,699.000 C486.869,705.471 487.467,712.382 487.235,719.000 C486.898,728.604 484.892,737.481 491.000,745.854 C502.479,761.590 525.677,762.019 542.000,755.055 C559.167,747.731 566.441,727.282 566.387,710.000 C566.323,689.470 561.074,669.874 556.607,650.000 C553.013,634.008 553.220,617.243 554.219,601.000 C555.487,580.377 561.406,554.607 545.413,538.000 C526.767,518.637 487.455,522.568 470.000,541.594 C468.240,543.512 466.086,545.711 464.829,548.000 C457.475,561.390 454.807,574.708 454.807,590.000 Z"></path>
+    <path fill-rule="evenodd" d="M567.437,598.000 C567.467,625.651 592.208,644.250 616.000,652.441 C625.873,655.839 635.983,658.304 646.000,661.214 C656.833,664.361 667.913,666.235 678.000,671.341 C682.047,673.389 686.616,676.903 686.390,682.000 C685.866,693.806 666.965,690.286 660.000,688.457 C655.234,687.206 650.746,685.077 646.000,683.749 C633.308,680.198 620.287,676.998 607.000,679.768 C577.654,685.887 564.458,716.150 582.758,741.000 C595.443,758.225 619.369,763.121 639.000,766.639 C676.594,773.378 724.266,769.993 759.000,753.373 C774.302,746.051 790.448,734.461 798.380,719.000 C801.734,712.463 804.856,705.410 805.555,698.000 C805.934,693.976 806.722,690.095 806.432,686.000 C803.325,642.101 754.154,622.676 717.000,616.591 C707.006,614.954 696.948,613.615 687.000,611.717 C682.994,610.953 678.768,610.540 675.000,608.907 C670.548,606.978 663.850,604.934 663.578,599.000 C662.987,586.079 684.695,587.209 693.000,587.382 C700.693,587.542 708.324,588.734 716.000,589.237 C738.015,590.682 773.727,589.788 784.611,566.000 C786.958,560.871 788.596,555.798 787.634,550.000 C786.889,545.512 785.713,541.858 783.286,538.000 C771.876,519.869 740.317,516.096 721.000,516.017 C710.268,515.974 699.735,515.761 689.000,516.734 C680.619,517.493 672.275,518.783 664.000,520.297 C631.495,526.245 585.049,543.358 572.096,577.000 C569.495,583.756 567.430,590.631 567.437,598.000 Z"></path>
+    <path fill-rule="evenodd" d="M784.666,614.000 C784.360,632.783 799.449,640.362 807.353,655.000 C812.104,663.799 816.450,673.832 817.011,684.000 C817.249,688.308 817.132,692.705 817.569,697.000 C818.273,703.922 823.035,709.505 830.000,710.579 C851.804,713.942 854.563,682.089 874.000,687.795 C881.784,690.080 887.360,699.303 890.864,706.000 C899.100,721.741 913.618,736.818 933.000,732.115 C950.699,727.820 957.869,704.093 965.337,690.000 C969.964,681.268 977.297,673.375 988.000,674.551 C999.359,675.799 1004.959,691.749 1007.364,701.000 C1012.050,719.029 1015.890,739.563 1031.000,752.222 C1052.547,770.275 1094.494,762.117 1103.556,734.000 C1109.345,716.036 1106.760,697.974 1102.836,680.000 C1098.566,660.440 1089.380,642.732 1080.428,625.000 C1077.835,619.864 1074.188,615.190 1071.720,610.000 C1068.380,602.974 1063.660,596.655 1059.614,590.000 C1053.667,580.217 1047.008,570.884 1039.705,562.000 C1024.450,543.442 1003.815,524.179 978.000,525.583 C959.776,526.574 946.472,538.639 937.964,554.000 C931.724,565.268 922.796,581.426 909.000,584.347 C883.050,589.842 873.679,556.343 854.000,546.824 C821.448,531.077 796.663,561.109 789.294,590.000 C787.293,597.846 784.800,605.792 784.666,614.000 Z"></path></symbol></svg>
+
+<!-- 01 · Cover: news, promise, deadline -->
+<section class="slide cover">
+  <div class="art"></div>
+  <header class="bar">
+    <svg class="logo" viewBox="0 0 966 262" fill="currentColor"><use href="#aism-mark" width="966" height="262"/></svg>
+    <span class="lbl pill lemon">Cohort 1 · Элсэлт нээлттэй</span>
+  </header>
+  <div class="cover-main">
+    <h1 class="h xl">Асуудлыг<br>эхлээд олно.<br>Дараа нь<br>AI-аар шийднэ.</h1>
+    <p class="lbl stats">24 шууд хичээл / 3 бодит төсөл<br><b>Код мэдэх шаардлагагүй</b></p>
+  </div>
+  <aside class="deadline">
+    <div>
+      <p class="lbl">Өргөдөл хаагдах</p>
+      <p class="num">2026.11.15</p>
+      <p class="t">Ням гараг, 23:59 · 30 суудал</p>
+    </div>
+    <span class="swipe"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span>
+  </aside>
+</section>
+
+<!-- 02 · What you build -->
+<section class="slide">
+  <header class="bar">
+    <svg class="logo" viewBox="0 0 966 262" fill="currentColor"><use href="#aism-mark" width="966" height="262"/></svg>
+    <span class="lbl count">02 / 05</span>
+  </header>
+  <p class="lbl kicker"><i class="sq"></i>Хөтөлбөр</p>
+  <h2 class="h l" style="font-size:76px">Гурван бодит асуудал, гурван бүтээгдэхүүн.</h2>
+  <ol class="projects">
+    <li><span class="no">01</span><div><h3>Асуудлыг задлах</h3><p class="skills">HTML, CSS, JavaScript, Git</p>
+      <p class="out"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>Ажилладаг прототип</p></div></li>
+    <li><span class="no">02</span><div><h3>Судалгаа ба үндэслэл</h3><p class="skills">Ярилцлага, React, Supabase</p>
+      <p class="out"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>Дата бүхий full-stack апп</p></div></li>
+    <li><span class="no">03</span><div><h3>Өөрсдийн асуудал</h3><p class="skills">Deploy, хэрэглэгчийн туршилт, pitch</p>
+      <p class="out"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>Бодит хэрэглэгчтэй MVP</p></div></li>
+  </ol>
+  <p class="t foot">3–4 хүнтэй багаар. Сурагч бүр төсөл бүрт өөрийн хэсгийг хариуцна. Төгсгөлд нь <span class="nw">Demo Day</span>.</p>
+</section>
+
+<!-- 03 · How you learn and who backs you -->
+<section class="slide">
+  <header class="bar">
+    <svg class="logo" viewBox="0 0 966 262" fill="currentColor"><use href="#aism-mark" width="966" height="262"/></svg>
+    <span class="lbl count">03 / 05</span>
+  </header>
+  <p class="lbl kicker"><i class="sq"></i>AI · Ментор · Их сургууль</p>
+  <div class="card ai">
+    <p class="lbl">AI-тай ажиллах дүрэм</p>
+    <p class="h">Эхлээд чи. Дараа нь AI. Хичээл бүрт.</p>
+    <p class="t">Чи шалгаж чадах тусам AI илүү ихийг хийнэ.</p>
+    <p class="rule">Тайлбарлаж чадахгүй зүйл төсөлд орохгүй.</p>
+  </div>
+  <div class="card">
+    <p class="lbl">Ментор, коуч</p>
+    <p class="t">Баг бүр өөрийн ментортой. Монгол болон гадаадад ажилладаг коучууд илтгэл тавьж, <span class="nw">Investor Day</span>, <span class="nw">Demo Day-д</span> шүүнэ.</p>
+  </div>
+  <div class="card">
+    <p class="lbl">Их сургуулийн бэлтгэл</p>
+    <p class="t">45 минутын гурван 1:1 уулзалт, эсээний санал, сургуулийн жагсаалт, зөвлөмж захидал.</p>
+  </div>
+</section>
+
+<!-- 04 · Is it for me: who, when, what you need, price -->
+<section class="slide">
+  <header class="bar">
+    <svg class="logo" viewBox="0 0 966 262" fill="currentColor"><use href="#aism-mark" width="966" height="262"/></svg>
+    <span class="lbl count">04 / 05</span>
+  </header>
+  <p class="lbl kicker"><i class="sq"></i>Элсэлт · 11.15 хүртэл</p>
+  <h2 class="h l" style="font-size:104px">Код мэдэх шаардлагагүй.</h2>
+  <p class="t lead">Элсэлт сонгон шалгаруулалттай. Бид сониуч зан, тууштай байдал, хүмүүстэй ажиллах чадварыг хардаг.</p>
+  <dl class="facts">
+    <div><dt>Хэнд</dt><dd>11, 12-р ангийн сурагч, их сургуулийн 1–2-р курсын оюутан, gap year авсан залуучууд</dd></div>
+    <div><dt>Хуваарь</dt><dd>Мягмар 19:00, Бямба 13:00. <span class="nw">Zoom-ээр</span> шууд, монгол хэлээр</dd></div>
+    <div><dt>Хэрэгтэй</dt><dd>Компьютер эсвэл таблет, тогтвортой интернэт, долоо хоногт 8–10 цаг</dd></div>
+    <div><dt>Төлбөр</dt><dd><b class="price">₮2,990,000</b>Бүх зүйл багтсан. Гурав хувааж төлнө.</dd></div>
+  </dl>
+</section>
+
+<!-- 05 · How to join + CTA -->
+<section class="slide blue">
+  <header class="bar">
+    <svg class="logo" viewBox="0 0 966 262" fill="currentColor"><use href="#aism-mark" width="966" height="262"/></svg>
+    <span class="lbl count">05 / 05</span>
+  </header>
+  <p class="lbl kicker"><i class="sq"></i>Элсэх дараалал</p>
+  <h2 class="h l" style="font-size:94px">Өргөдлөө 11.15 хүртэл илгээ.</h2>
+  <ol class="steps">
+    <li><span class="no">01</span>Өргөдөл, 20 минут</li>
+    <li><span class="no">02</span>48 цагт хариу</li>
+    <li><span class="no">03</span>48 цагт суудлаа баталгаажуулах</li>
+    <li><span class="no">04</span>11.20-нд эхлэх</li>
+  </ol>
+  <p class="t note">Ням гараг, 23:59 хүртэл. 30 суудал тэнцсэн дарааллаар дүүрнэ.</p>
+  <div class="cta">
+    <span class="lbl">Өргөдөл илгээх</span>
+    <span class="url">aism.world<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+  </div>
+  <p class="lbl sign">Build the future, from here.</p>
+</section>
+</body>
+</html>

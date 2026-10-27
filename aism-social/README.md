@@ -17,6 +17,9 @@ Every post goes through the rules in [`guardrails.md`](guardrails.md) first.
 | [`program-brief.md`](program-brief.md) | Facts from the full program that we can use in content, with dates and approved public wording |
 | [`guardrails.md`](guardrails.md) | What we must never say, what is still pending Founder approval, and what needs consent |
 | [`post-ideas.md`](post-ideas.md) | Post ideas ranked by priority, starting with the core program posts |
+| [`posts/`](posts) | Finished posts: copy, caption and rendered slides. Start with [`01-cohort-1-launch`](posts/01-cohort-1-launch/post.md) |
+| [`brand/`](brand) | AISM logo and hero art, taken from aism.world |
+| [`tools/render.js`](tools/render.js) | Renders a post's `slides.html` to PNGs and flags text that overflows (needs Playwright) |
 
 ## Key dates for the content calendar
 

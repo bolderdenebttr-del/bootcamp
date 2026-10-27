@@ -47,7 +47,7 @@ Problems first, then AI, every session.
 
 | | Project 1 | Project 2 | Project 3 |
 |---|---|---|---|
-| Problem comes from | AISM | the team | the team finds it |
+| Problem comes from | AISM | unclear: the section 5 table and aism.world say the team; L9 says AISM announces Problem 2 | the team finds it |
 | Sessions | L1–L8 (11.21–12.15) | L9–L15 (12.19–01.12) | L16–L24 (01.16–02.20) |
 | Problem-solving goal | Break it down, set scope | Research, justify decisions | Find and validate your own problem |
 | AI role | Critic (L1), tutor (L4) | Builder (L10), inside the product (L14) | Teammate |

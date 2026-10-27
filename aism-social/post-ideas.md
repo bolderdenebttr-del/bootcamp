@@ -13,6 +13,7 @@ Check every idea against `guardrails.md`. ⚠️ marks ideas that touch somethin
 These answer "what is it, who is it for, how do I get in". Without them, nothing else lands.
 
 ### 1. Cohort 1 announcement: the whole program on one screen
+**Done:** [`posts/01-cohort-1-launch`](posts/01-cohort-1-launch/post.md), a 5-slide carousel plus caption.
 - **Hook:** "13 долоо хоног. 24 шууд хичээл. 3 бодит төсөл. 1 Demo Day."
 - **Content:** live online in Mongolian; starts 11.20; teams of 3–4; mentor for every team; college prep included; apply by 11.15.
 - **Format:** carousel (6–8 slides) + pinned post. This is the anchor every other post links back to.

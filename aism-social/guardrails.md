@@ -10,6 +10,7 @@ Check every post against this list before it goes out. Each rule comes from the 
 - **Discounts, early-bird pricing, referral codes.** None exist.
 - **That the certificate is academic credit, accreditation or grade advancement.** It isn't.
 - **"Top tier" or "international"** about coaches/mentors, until the confirmed roster proves it.
+  Use the site's wording instead: "Монгол болон гадаадад ажилладаг коучууд".
 - **That AI writes essays.** AI never writes, rewrites or translates application essays.
 
 ## Needs consent before posting
@@ -18,9 +19,12 @@ Check every post against this list before it goes out. Each rule comes from the 
 - **Student names and photos:** separate marketing consent. A student who says no keeps their seat.
 - **Interview subjects and user testers** in student projects: their identities never appear.
 
-## Pending Founder approval (don't post as fact yet)
+## Still open in the doc (section 17.1), so keep off images
 
-| Item | Safe wording until approved |
+aism.world already shows 90-minute sessions, 13 weeks and Demo Day 2027.02.20, but the doc still lists them as open.
+Images can't be edited after posting, so they carry only settled facts. Captions can be fixed later.
+
+| Item | Safe wording until settled |
 |---|---|
 | Session length: 90 min vs 2 h (most urgent) | "Two live sessions a week, Tue evening and Sat afternoon" |
 | Demo Day 02.20 | "Demo Day in February 2027" |
@@ -34,8 +38,12 @@ Check every post against this list before it goes out. Each rule comes from the 
 
 ## Check before posting
 
-- **Tuition (₮2,990,000):** the payment section is marked internal ("дотоод"), but the price appears in Key facts. Confirm whether price and installment plan go on social.
-- **The 30-seat cap / 8 teams:** good for urgency, but confirm before using "only X seats left" posts.
+- **Tuition:** public on aism.world as "₮2,990,000. Бүх зүйл багтсан. Гурав хувааж төлнө." Use that exact line.
+  The payment dates and refund rules stay off social.
+- **The 30-seat cap:** fine to state, and seats fill in order of acceptance. Don't post "only X seats left" without live numbers.
+- **Project 2's problem source:** the site and the doc's section 5 table say teams find it, but L9 says AISM announces Problem 2.
+  Don't say who sets Project 2's problem until this is settled.
+- **Match aism.world wording** where it exists, so a click lands on the same message.
 
 ## Approved lines (use freely)
 
