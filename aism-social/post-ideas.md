@@ -14,10 +14,10 @@ These answer "what is it, who is it for, how do I get in". Without them, nothing
 
 ### 1. Cohort 1 announcement: the whole program on one screen
 **Done:** [`posts/01-cohort-1-launch`](posts/01-cohort-1-launch/post.md), a 5-slide carousel plus caption.
-- **Hook:** "13 долоо хоног. 24 шууд хичээл. 3 бодит төсөл. 1 Demo Day."
+- **Hook:** "24 шууд хичээл. 3 бодит төсөл. 1 Demo Day."
 - **Content:** live online in Mongolian; starts 11.20; teams of 3–4; mentor for every team; college prep included; apply by 11.15.
 - **Format:** carousel (6–8 slides) + pinned post. This is the anchor every other post links back to.
-- ⚠️ Say "Demo Day in February" until 02.20 is approved.
+- Demo Day has no date yet; don't print one.
 
 ### 2. "Эхлээд чи. Дараа нь AI. Хичээл бүрт." The AI philosophy
 - **Hook:** "AI-г эхний өдрөөс ашиглана. Гэхдээ хэзээ ч эхэнд биш."
@@ -56,7 +56,7 @@ These answer "what is it, who is it for, how do I get in". Without them, nothing
 - **Hook:** "Мягмар 19:00. Бямба 13:00. Хооронд нь юу болдог вэ?"
 - **Content:** session structure (new concept with the whole class → team breakout with mentors), weekly team mission, 30-minute mentor meeting, optional Thursday workshops.
 - **Format:** carousel or "timeline" reel.
-- ⚠️ Don't print "90 minutes" or "3 hours live" until session length is approved.
+- Sessions are 120 minutes: Tue 19:00–21:00, Sat 13:00–15:00.
 
 ### 9. College prep is built in
 - **Hook:** "Код, AI, бас их сургуулийн бэлтгэл. Нэг хөтөлбөрт."
@@ -70,7 +70,7 @@ These answer "what is it, who is it for, how do I get in". Without them, nothing
 - **Format:** carousel + Facebook long post (parents are on FB).
 
 ### 11. What you walk away with
-- **Hook:** "13 долоо хоногийн дараа чамд юу үлдэх вэ?"
+- **Hook:** "Cohort 1-ийн дараа чамд юу үлдэх вэ?"
 - **Content:** 3 team projects with public links and GitHub repos, user research evidence, Demo Day recording, college counseling, a recommendation letter (if conditions are met), the certificate (state that it's not academic credit).
 - **Format:** carousel, "portfolio" visual.
 
@@ -122,11 +122,6 @@ Live documentation once Cohort 1 starts. Student faces and names only with marke
 
 ---
 
-## Suggested order for the next 19 days
+## Schedule
 
-| Window | Posts |
-|---|---|
-| 10.28–10.31 | #1 announcement (pin), #2 AI philosophy, #4 who it's for |
-| 11.01–11.05 | #5 what we look for, #3 three projects, #6 how to apply, #10 parents |
-| 11.06–11.10 | #9 college prep, #8 a week inside, #7 video tips, #12 "1 week left" |
-| 11.11–11.15 | #11 what you leave with, #13 builder license, #16 L1 teaser, #12 countdown |
+The day-by-day schedule now lives in [`plan/18-day-plan.md`](plan/18-day-plan.md).

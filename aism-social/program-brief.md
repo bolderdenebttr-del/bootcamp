@@ -5,7 +5,7 @@ Items marked **(pending)** still need Founder approval; see `guardrails.md`.
 
 ## One-line pitch
 
-13 weeks, 24 live sessions, 3 real projects built in teams of 3–4, Demo Day at the end.
+24 live sessions, 3 real projects built in teams of 3–4, Demo Day at the end.
 Problems first, then AI, every session.
 
 ## Key facts
@@ -20,10 +20,10 @@ Problems first, then AI, every session.
 | Sessions | 24 live sessions, 120 minutes each; the last 30 minutes are Q&A or buffer (decided 10.28) |
 | Breaks | 12.27–01.04 (New Year), 02.03–02.12 (Tsagaan Sar + user testing week) |
 | Seats | 30 students, 8 teams (six of 4, two of 3) |
-| Weekly load | 8–10 hours, including 3 hours live |
+| Weekly load | 8–10 hours, including 4 hours live |
 | Attendance | 20 of 24 sessions required |
 | Tuition | ₮2,990,000: ₮990,000 seat deposit, then ₮1,000,000 twice (12.18, 01.15) |
-| Included | Team mentor, Mongolian and international coaches, guest speakers, college admissions counseling, recommendation letter, AISM certificate |
+| Included | Team mentor, coaches working in Mongolia and abroad, guest speakers, college admissions counseling, recommendation letter, AISM certificate |
 | Goal | Every student ships 3 projects while learning to build with the latest AI tools |
 
 ## Who it is for
@@ -48,7 +48,7 @@ Problems first, then AI, every session.
 | | Project 1 | Project 2 | Project 3 |
 |---|---|---|---|
 | Problem comes from | AISM | the team finds it (decided 10.28) | the team finds and validates it |
-| Sessions | L1–L8 (11.21–12.15) | L9–L15 (12.19–01.12) | L16–L24 (01.16–02.20) |
+| Sessions | L1–L8 (11.21–12.15) | L9–L15 (12.19–01.12) | L16–L24 (from 01.16, ends at Demo Day) |
 | Problem-solving goal | Break it down, set scope | Research, justify decisions | Find and validate your own problem |
 | AI role | Critic (L1), tutor (L4) | Builder (L10), inside the product (L14) | Teammate |
 | Output | Working prototype | Full-stack app with data | Deployed MVP with real users |

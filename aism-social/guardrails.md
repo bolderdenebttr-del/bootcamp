@@ -21,13 +21,13 @@ Check every post against this list before it goes out. Each rule comes from the 
 
 ## Still open in the doc (section 17.1), so keep off images
 
-aism.world already shows 90-minute sessions, 13 weeks and Demo Day 2027.02.20, but the doc still lists them as open.
+Decided 10.28: sessions are 120 minutes (Tue 19:00–21:00, Sat 13:00–15:00; the last 30 minutes are Q&A or buffer).
+Demo Day's date is not set, so no week count either. aism.world still shows 90 min, 13 weeks and 2027.02.20 and needs updating.
 Images can't be edited after posting, so they carry only settled facts. Captions can be fixed later.
 
 | Item | Safe wording until settled |
 |---|---|
-| Session length: 90 min vs 2 h (most urgent) | "Two live sessions a week, Tue evening and Sat afternoon" |
-| Demo Day 02.20 | "Demo Day in February 2027" |
+| Demo Day date | "Demo Day" with no date; no "13 weeks" |
 | Extra session Thu 01.07 | Don't mention |
 | Tsagaan Sar dates (02.06–02.08 or March) | "User testing week" / "during Tsagaan Sar visits" without dates |
 | Investor Day panel and Demo Day judges | No names |
