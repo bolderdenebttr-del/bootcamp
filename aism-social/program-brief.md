@@ -15,9 +15,9 @@ Problems first, then AI, every session.
 | Format | Live online (Zoom), taught in Mongolian, English technical materials |
 | Applications close | 11.15 (Sun) 23:59; the form closes automatically |
 | Start | 11.20 (Fri) opening session; L1 on 11.21 (Sat) |
-| Demo Day | 2027.02.20 (Sat), L24 **(pending)** |
-| Schedule | Tue 19:00–20:30, Sat 13:00–14:30; one extra session Thu 01.07 **(pending)** |
-| Sessions | 24 live sessions, 90 minutes each **(length pending: 90 min vs 2 h)** |
+| Demo Day | Date to be decided |
+| Schedule | Tue 19:00–21:00, Sat 13:00–15:00; one extra session Thu 01.07 **(pending)** |
+| Sessions | 24 live sessions, 120 minutes each; the last 30 minutes are Q&A or buffer (decided 10.28) |
 | Breaks | 12.27–01.04 (New Year), 02.03–02.12 (Tsagaan Sar + user testing week) |
 | Seats | 30 students, 8 teams (six of 4, two of 3) |
 | Weekly load | 8–10 hours, including 3 hours live |
@@ -47,7 +47,7 @@ Problems first, then AI, every session.
 
 | | Project 1 | Project 2 | Project 3 |
 |---|---|---|---|
-| Problem comes from | AISM | unclear: the section 5 table and aism.world say the team; L9 says AISM announces Problem 2 | the team finds it |
+| Problem comes from | AISM | the team finds it (decided 10.28) | the team finds and validates it |
 | Sessions | L1–L8 (11.21–12.15) | L9–L15 (12.19–01.12) | L16–L24 (01.16–02.20) |
 | Problem-solving goal | Break it down, set scope | Research, justify decisions | Find and validate your own problem |
 | AI role | Critic (L1), tutor (L4) | Builder (L10), inside the product (L14) | Teammate |

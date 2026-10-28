@@ -41,8 +41,7 @@ Images can't be edited after posting, so they carry only settled facts. Captions
 - **Tuition:** public on aism.world as "₮2,990,000. Бүх зүйл багтсан. Гурав хувааж төлнө." Use that exact line.
   The payment dates and refund rules stay off social.
 - **The 30-seat cap:** fine to state, and seats fill in order of acceptance. Don't post "only X seats left" without live numbers.
-- **Project 2's problem source:** the site and the doc's section 5 table say teams find it, but L9 says AISM announces Problem 2.
-  Don't say who sets Project 2's problem until this is settled.
+- **Project 2's problem source:** decided 10.28, teams find it. The doc's L9 ("Асуудал 2-ыг зарлана") needs updating to match.
 - **Match aism.world wording** where it exists, so a click lands on the same message.
 
 ## Approved lines (use freely)

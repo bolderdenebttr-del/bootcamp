@@ -8,7 +8,7 @@ Rendered slides: `01.png` … `05.png`. Source: `slides.html` (re-render with `n
 - **One question per slide:** What is it? → What will I build? → How will I learn, and who backs me? → Is it for me? → How do I join?
 - **Your outline, still 5 slides.** The coding stack now sits inside each project on slide 2, so "curriculum" fits in 2 slides without a separate coding block. The logistics ("etc.") are split: time and money go on slide 4 ("can I commit?"), the steps go on slide 5 ("how do I join?").
 - **Same words as aism.world.** The hero line, stats, admission steps, price card and coach line are copied from the site, so a tap lands on the same message. The price is already public there, so it's in.
-- **Images carry only settled facts.** The doc still lists 90-min sessions, 13 weeks and Demo Day 02.20 as open, so they're left off. Captions can be edited later; images can't.
+- **Only settled facts.** Sessions are 120 minutes (19:00–21:00, 13:00–15:00); Demo Day's date is still open, so no date or week count appears.
 
 ## Slides
 
@@ -20,9 +20,9 @@ Rendered slides: `01.png` … `05.png`. Source: `slides.html` (re-render with `n
 
 **02 · Хөтөлбөр**
 - Headline: `ГУРВАН БОДИТ АСУУДАЛ, ГУРВАН БҮТЭЭГДЭХҮҮН.`
-- 01 `АСУУДЛЫГ ЗАДЛАХ` · HTML, CSS, JavaScript, Git → Ажилладаг прототип
-- 02 `СУДАЛГАА БА ҮНДЭСЛЭЛ` · Ярилцлага, React, Supabase → Дата бүхий full-stack апп
-- 03 `ӨӨРСДИЙН АСУУДАЛ` · Deploy, хэрэглэгчийн туршилт, pitch → Бодит хэрэглэгчтэй MVP
+- 01 `АСУУДЛЫГ ЗАДЛАХ` · Асуудлыг AISM өгнө · HTML, CSS, JavaScript, Git → Ажилладаг прототип
+- 02 `СУДАЛГАА БА ҮНДЭСЛЭЛ` · Асуудлаа баг өөрсдөө олно · Ярилцлага, React, Supabase → Дата бүхий full-stack апп
+- 03 `ӨӨРСДИЙН АСУУДАЛ` · Асуудлаа баг өөрсдөө олж батална · Deploy, хэрэглэгчийн туршилт, pitch → Бодит хэрэглэгчтэй MVP
 - Footer: `3–4 хүнтэй багаар. Сурагч бүр төсөл бүрт өөрийн хэсгийг хариуцна. Төгсгөлд нь Demo Day.`
 
 **03 · AI · Ментор · Их сургууль**
@@ -34,7 +34,7 @@ Rendered slides: `01.png` … `05.png`. Source: `slides.html` (re-render with `n
 - Headline: `КОД МЭДЭХ ШААРДЛАГАГҮЙ.`
 - Lead: Элсэлт сонгон шалгаруулалттай. Бид сониуч зан, тууштай байдал, хүмүүстэй ажиллах чадварыг хардаг.
 - `ХЭНД` 11, 12-р ангийн сурагч, их сургуулийн 1–2-р курсын оюутан, gap year авсан залуучууд
-- `ХУВААРЬ` Мягмар 19:00, Бямба 13:00. Zoom-ээр шууд, монгол хэлээр
+- `ХУВААРЬ` Мягмар 19:00–21:00, Бямба 13:00–15:00. Zoom-ээр шууд, монгол хэлээр
 - `ХЭРЭГТЭЙ` Компьютер эсвэл таблет, тогтвортой интернэт, долоо хоногт 8–10 цаг
 - `ТӨЛБӨР` **₮2,990,000** · Бүх зүйл багтсан. Гурав хувааж төлнө.
 
@@ -54,11 +54,11 @@ AISM Digital Campus · Cohort 1-ийн элсэлт нээлттэй. Өргөд
 
 Асуудлыг эхлээд олно. Дараа нь AI-аар шийднэ.
 
-→ 24 шууд хичээлээр 3–4 хүнтэй багаараа 3 бодит төсөл бүтээнэ: ажилладаг прототип, дата бүхий full-stack апп, бодит хэрэглэгчтэй MVP. Төгсгөлд нь Demo Day.
+→ 24 шууд хичээлээр 3–4 хүнтэй багаараа 3 бодит төсөл бүтээнэ. Эхний асуудлыг AISM өгнө, дараагийн хоёрыг баг өөрсдөө олно: ажилладаг прототип → дата бүхий full-stack апп → бодит хэрэглэгчтэй MVP. Төгсгөлд нь Demo Day.
 → AI хичээл бүрт. Эхлээд чи, дараа нь AI. Тайлбарлаж чадахгүй зүйл төсөлд орохгүй.
 → Багтсан: баг бүрт ментор, Монгол болон гадаадад ажилладаг коучууд, их сургуулийн элсэлтийн зөвлөгөө, зөвлөмж захидал, AISM сертификат.
 → Хэнд: 11, 12-р ангийн сурагч, их сургуулийн 1–2-р курсын оюутан, gap year авсан залуучууд. Код мэдэх шаардлагагүй.
-→ 11.20-нд эхэлнэ. Мягмар 19:00, Бямба 13:00, Zoom-ээр шууд, монгол хэлээр. Долоо хоногт 8–10 цаг.
+→ 11.20-нд эхэлнэ. Мягмар 19:00–21:00, Бямба 13:00–15:00, Zoom-ээр шууд, монгол хэлээр. Долоо хоногт 8–10 цаг.
 → Төлбөр ₮2,990,000. Бүх зүйл багтсан, гурав хувааж төлнө.
 
 Өргөдөл 20 минут, хариу 48 цагт. Суудал тэнцсэн дарааллаар дүүрнэ. Тэнцсэнээс хойш шийдэх хугацаа 48 цаг тул өргөдөл өгөхөөсөө өмнө гэр бүлээрээ ярилцаарай.
