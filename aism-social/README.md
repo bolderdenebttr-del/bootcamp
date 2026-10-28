@@ -14,6 +14,8 @@ Every post goes through the rules in [`guardrails.md`](guardrails.md) first.
 
 | File | What it is |
 |---|---|
+| [`plan/positioning.md`](plan/positioning.md) | The core message (from the founder's draft), the two audiences, the line bank and the 45s founder script |
+| [`plan/18-day-plan.md`](plan/18-day-plan.md) | 10.28–11.15 campaign: Day-0 fixes, the daily 5-piece system, the calendar, Meta ads, measurement |
 | [`program-brief.md`](program-brief.md) | Facts from the full program that we can use in content, with dates and approved public wording |
 | [`guardrails.md`](guardrails.md) | What we must never say, what is still pending Founder approval, and what needs consent |
 | [`post-ideas.md`](post-ideas.md) | Post ideas ranked by priority, starting with the core program posts |
