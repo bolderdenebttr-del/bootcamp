@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<title>AISM Motion Engine</title>
+<link rel="stylesheet" href="fontpkgs/node_modules/@fontsource/montserrat/500.css">
+<link rel="stylesheet" href="fontpkgs/node_modules/@fontsource/montserrat/600.css">
+<link rel="stylesheet" href="fontpkgs/node_modules/@fontsource/montserrat/800.css">
+<link rel="stylesheet" href="fontpkgs/node_modules/@fontsource/tinos/400-italic.css">
+<link rel="stylesheet" href="fontpkgs/node_modules/@fontsource/instrument-serif/400-italic.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #000; overflow: hidden; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #F1ECE2; }
+  .frame { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; }
+  .frame > .bg, .frame > .scene, .frame > .cap { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+  svg { display: block; overflow: visible; }
+  .ln { position: absolute; white-space: nowrap; line-height: 1; }
+  .w { display: inline-block; white-space: pre; }
+  .lead, .tail { font-family: 'Tinos', serif; font-style: italic; font-weight: 400; letter-spacing: -0.03em; }
+  .lead.en, .tail.en { font-family: 'Instrument Serif', serif; }
+  .punch { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: -0.04em; }
+  .tnum { font-variant-numeric: tabular-nums; letter-spacing: -0.05em; }
+  .src { position: absolute; left: 110px; font-family: 'Montserrat', sans-serif; font-weight: 500; font-size: 25px; letter-spacing: -0.01em; white-space: nowrap; }
+  #grain { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; mix-blend-mode: overlay; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="A" class="frame"></div>
+  <div id="B" class="frame"></div>
+  <div id="R" class="frame"></div>
+  <canvas id="grain" width="540" height="960"></canvas>
+</div>
+<script>
+// ---------------------------------------------------------------------------
+// Tokens, easing, helpers
+// ---------------------------------------------------------------------------
+const W = 1080, H = 1920, FPS = 30, F = 1 / FPS;
+const T = {
+  paper: '#F1ECE2', paper2: '#E7E1D4', rule: '#D4CCBD', ink: '#171512', ink2: '#5F5A51',
+  blue: '#1E4DBB', blueDeep: '#173E99', blueLight: '#6C8FE6', bluePale: '#BFD0FF',
+  inkText: '#F1ECE2', inkMuted: '#A69F92', inkRule: '#37332D',
+};
+const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
+const eo = x => 1 - Math.pow(1 - clamp01(x), 3);
+const eio = x => { x = clamp01(x); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const eback = (x, s = 1.4) => { x = clamp01(x); const c3 = s + 1; return 1 + c3 * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2); };
+const ein = x => Math.pow(clamp01(x), 3);
+const prog = (t, a, d) => clamp01((t - a) / d);
+const lerp = (a, b, k) => a + (b - a) * k;
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// Register palettes: lead/tail, punch, numbers, accent, ghost alpha, grain alpha, rules, muted fills.
+const REG = {
+  paper:  { lead: T.ink,      punch: T.ink,     num: T.blue,      accent: T.blue,      ghost: 0.12, grain: 0.16, src: T.ink2,     line: T.rule,    soft: T.paper2, fg: T.ink,     mute: '#B9B1A3' },
+  ink:    { lead: T.inkMuted, punch: T.inkText, num: T.blueLight, accent: T.blueLight, ghost: 0.20, grain: 0.10, src: T.inkMuted, line: T.inkRule, soft: '#2A2621', fg: T.inkText, mute: '#5A544B' },
+  khadag: { lead: T.bluePale, punch: T.paper,   num: T.paper,     accent: T.bluePale,  ghost: 0.20, grain: 0.12, src: T.bluePale, line: '#4C74D6', soft: '#2A5BCB', fg: T.paper,   mute: '#5C80DA' },
+};
+
+// ---------------------------------------------------------------------------
+// Text measurement (canvas, after fonts load)
+// ---------------------------------------------------------------------------
+const mctx = document.createElement('canvas').getContext('2d');
+const FONT = {
+  lead:  (s, en) => `italic 400 ${s}px ${en ? "'Instrument Serif'" : "'Tinos'"}`,
+  tail:  (s, en) => `italic 400 ${s}px ${en ? "'Instrument Serif'" : "'Tinos'"}`,
+  punch: s => `800 ${s}px 'Montserrat'`,
+};
+const TRACK = { lead: -0.03, tail: -0.03, punch: -0.04 };
+function measure(kind, text, size, en) {
+  mctx.font = FONT[kind](size, en);
+  return mctx.measureText(text).width + TRACK[kind] * size * [...text].length;
+}
+
+// ---------------------------------------------------------------------------
+// Backgrounds
+// ---------------------------------------------------------------------------
+function latticeSVG(id, lt = 0, opacity = 0.15, fadeTo = 0.70) {
+  return `<svg class="scene" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="position:absolute;left:0;top:0">
+    <defs>
+      <pattern id="lat${id}" width="48" height="48" patternUnits="userSpaceOnUse" patternTransform="translate(${(lt * 14).toFixed(2)} ${(-lt * 7).toFixed(2)})">
+        <path d="M0 0 L48 48 M48 0 L0 48" stroke="${T.paper}" stroke-width="1.6" stroke-opacity="${opacity}" fill="none"/>
+      </pattern>
+      <linearGradient id="latf${id}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="1"/>
+        <stop offset="${fadeTo * 0.55}" stop-color="#fff" stop-opacity="0.75"/>
+        <stop offset="${fadeTo}" stop-color="#fff" stop-opacity="0"/>
+      </linearGradient>
+      <mask id="latm${id}"><rect width="${W}" height="${H}" fill="url(#latf${id})"/></mask>
+    </defs>
+    <rect width="${W}" height="${H}" fill="url(#lat${id})" mask="url(#latm${id})"/>
+  </svg>`;
+}
+function bgHTML(reg, lt, id) {
+  if (reg === 'paper') {
+    return `<div class="bg" style="background:${T.paper}"></div>
+      <div class="bg" style="background:radial-gradient(ellipse 78% 62% at 50% 46%, rgba(23,21,18,0) 52%, rgba(23,21,18,0.17) 100%)"></div>`;
+  }
+  if (reg === 'ink') {
+    const dx = 2 * Math.sin(lt * 0.55 + 0.7), dy = 1.2 * Math.sin(lt * 0.37);
+    return `<div class="bg" style="background:radial-gradient(ellipse 70% 46% at ${50 + dx}% ${40 + dy}%, #2E2923 0%, #1D1A16 45%, #100F0D 100%)"></div>`;
+  }
+  // khadag
+  return `<div class="bg" style="background:linear-gradient(172deg, #2254C7 0%, #1E4DBB 45%, #173E99 100%)"></div>${latticeSVG(id, lt)}`;
+}
+
+// ---------------------------------------------------------------------------
+// Captions: ghost + per-word fill, two-tier (lead / punch / tail)
+// ---------------------------------------------------------------------------
+// A word is ['text', onset], ['text', onset, {accent:true}] or {num:[from,to,t0,dur], suffix:'', prefix:'', t:onset}.
+function wText(w) { return Array.isArray(w) ? w[0] : (w.prefix || '') + fmtNum(w.num[1], w) + (w.suffix || ''); }
+function wOnset(w) { return Array.isArray(w) ? w[1] : w.t; }
+function wOpt(w) { return Array.isArray(w) ? (w[2] || {}) : w; }
+function fmtNum(v, w) {
+  const n = Math.round(v);
+  const s = String(Math.abs(n));
+  const g = w.group === false ? s : s.replace(/\B(?=(\d{3})+(?!\d))/g, w.sep || ',');
+  return (n < 0 ? '−' : '') + g;
+}
+// Ghost level ramps in with the phrase; the fill takes each word to 100% in 4 frames on its onset.
+function wordAlpha(w, t, ghost, inA) {
+  const f = eo((t - wOnset(w)) / (4 * F));
+  return Math.min(1, ghost * inA + (1 - ghost) * f);
+}
+
+// Layout a phrase once (cached on the phrase object).
+const isLatin = ws => /^[\x00-\x7F\s]*$/.test(ws.map(wText).join(' '));
+function layoutPhrase(p) {
+  if (p._lay) return p._lay;
+  const en = !!(p.lead && p.lead.length && isLatin(p.lead));
+  const x = p.x ?? 110, y = p.y ?? 360;
+  const maxW = (p.maxW ?? 860);
+  let ls = p.leadSize ?? 58;
+  const leadText = (p.lead || []).map(wText).join(' ');
+  // Lead: shrink to 52 before wrapping onto two lines.
+  let leadLines = [p.lead || []];
+  if (leadText) {
+    while (ls > 52 && measure('lead', leadText, ls, en) > maxW) ls -= 1;
+    if (measure('lead', leadText, ls, en) > maxW) {
+      const ws = p.lead; let best = 1, bestDiff = 1e9;
+      for (let k = 1; k < ws.length; k++) {
+        const a = measure('lead', ws.slice(0, k).map(wText).join(' '), ls, en);
+        const b = measure('lead', ws.slice(k).map(wText).join(' '), ls, en);
+        if (a <= maxW && b <= maxW && Math.abs(a - b) < bestDiff) { bestDiff = Math.abs(a - b); best = k; }
+      }
+      leadLines = [ws.slice(0, best), ws.slice(best)];
+    }
+  }
+  // Punch: fit width, never below 96 px; wrap two words onto two lines if needed.
+  const indent = p.indent ?? 50;
+  let ps = p.punchSize ?? 116;
+  const punchText = (p.punch || []).map(wText).join(' ');
+  let punchLines = [p.punch || []];
+  if (punchText) {
+    const pw = measure('punch', punchText, ps);
+    const room = maxW - indent;
+    if (pw > room) ps = Math.max(96, Math.floor(ps * room / pw));
+    if (measure('punch', punchText, ps) > room && (p.punch || []).length > 1) {
+      ps = p.punchSize ?? 116;
+      punchLines = p.punch.map(w => [w]);
+      const widest = Math.max(...punchLines.map(l => measure('punch', wText(l[0]), ps)));
+      if (widest > room) ps = Math.max(96, Math.floor(ps * room / widest));
+    }
+    const finalW = Math.max(...punchLines.map(l => measure('punch', l.map(wText).join(' '), ps)));
+    if (finalW > room + 2) console.warn('PUNCH OVERFLOW', punchText, finalW);
+  }
+  const ts = p.tailSize ?? 46;
+  const lines = [];
+  let cy = y;
+  if (leadText) for (const l of leadLines) { lines.push({ k: 'lead', ws: l, x, y: cy, size: ls }); cy += ls * 1.16; }
+  if (leadText) cy += (p.gap ?? 6);
+  let punchRight = x;
+  if (punchText) for (const l of punchLines) {
+    const lw = measure('punch', l.map(wText).join(' '), ps);
+    lines.push({ k: 'punch', ws: l, x: x + indent, y: cy, size: ps });
+    punchRight = Math.max(punchRight, x + indent + lw);
+    cy += ps * 1.02;
+  }
+  if (p.tail && p.tail.length) {
+    const tw = measure('tail', p.tail.map(wText).join(' '), ts, isLatin(p.tail));
+    let tx = p.tailX ?? Math.min(560, Math.max(430, punchRight - tw));
+    if (tx + tw > 980) tx = Math.max(110, 980 - tw);
+    lines.push({ k: 'tail', ws: p.tail, x: tx, y: cy + 8, size: ts });
+    cy += ts * 1.2 + 8;
+  }
+  p._lay = { lines, bottom: cy };
+  return p._lay;
+}
+
+function phraseHTML(p, t, reg, mult, inA) {
+  const R = REG[reg];
+  const lay = layoutPhrase(p);
+  const ghost = R.ghost;
+  let html = '';
+  for (const ln of lay.lines) {
+    const cls = ln.k + (ln.k !== 'punch' && isLatin(ln.ws) ? ' en' : '');
+    const base = ln.k === 'punch' ? R.punch : R.lead;
+    let inner = '';
+    ln.ws.forEach((w, i) => {
+      const o = wOpt(w);
+      let txt = wText(w);
+      let col = o.accent ? R.accent : base;
+      let extra = '';
+      if (!Array.isArray(w) && w.num) {
+        const [a, b, t0, d] = w.num;
+        txt = (w.prefix || '') + fmtNum(lerp(a, b, eio((t - t0) / d)), w) + (w.suffix || '');
+        col = R.num; extra = ' tnum';
+      }
+      const a = wordAlpha(w, t, ghost, inA) * mult;
+      inner += `<span class="w${extra}" style="color:${col};opacity:${a.toFixed(3)}">${esc(txt)}</span>` + (i < ln.ws.length - 1 ? ' ' : '');
+    });
+    html += `<div class="ln ${cls}" style="left:${ln.x}px;top:${ln.y}px;font-size:${ln.size}px">${inner}</div>`;
+  }
+  return html;
+}
+
+// Phrases in a shot: each lives from t0 (ghost in) to the next phrase's t0 (or shot end), 5 frame exit.
+function capsHTML(sh, t, reg) {
+  const ps = sh.caps || [];
+  let html = '';
+  ps.forEach((p, i) => {
+    const t0 = p.t0 ?? Math.max(sh.at, Math.min(...[...(p.lead || []), ...(p.punch || []), ...(p.tail || [])].map(wOnset)) - 0.12);
+    const t1 = p.t1 ?? (i < ps.length - 1 ? (ps[i + 1].t0 ?? Math.min(...[...(ps[i + 1].lead || []), ...(ps[i + 1].punch || [])].map(wOnset)) - 0.12) : sh.at + sh.dur);
+    if (t < t0 || t >= t1) return;
+    const inA = eo((t - t0) / (4 * F));
+    const out = p.hold ? 1 : 1 - clamp01((t - (t1 - 5 * F)) / (5 * F));
+    html += phraseHTML(p, t, reg, out, inA);
+  });
+  return html;
+}
+
+// ---------------------------------------------------------------------------
+// SVG drawing kit (scenes compose these)
+// ---------------------------------------------------------------------------
+const K = {
+  // Round figure token: head + shoulders. s = scale (1 = 64 px head).
+  fig(x, y, s, fill, o = {}) {
+    const op = o.opacity ?? 1, st = o.stroke ? `stroke="${o.stroke}" stroke-width="${o.sw || 4}" ${o.dash ? `stroke-dasharray="${o.dash}"` : ''}` : '';
+    const f = o.hollow ? 'none' : fill;
+    return `<g transform="translate(${x} ${y}) scale(${s})" opacity="${op}">
+      <circle cx="0" cy="-58" r="30" fill="${f}" ${st}/>
+      <path d="M-46 30 C-46 -14 -24 -22 0 -22 C24 -22 46 -14 46 30 Z" fill="${f}" ${st}/>
+    </g>`;
+  },
+  circle(x, y, r, fill, o = {}) {
+    return `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" ${o.stroke ? `stroke="${o.stroke}" stroke-width="${o.sw || 3}"` : ''} ${o.dash ? `stroke-dasharray="${o.dash}"` : ''} opacity="${o.opacity ?? 1}"/>`;
+  },
+  ring(x, y, r, col, sw, op) { return `<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}" opacity="${op}"/>`; },
+  // Landing ring: 16 to 60 px over 0.9 s.
+  landing(x, y, lt, t0, col) {
+    const k = prog(lt, t0, 0.9); if (k <= 0 || k >= 1) return '';
+    return K.ring(x, y, lerp(16, 60, eo(k)), col, 3, (1 - k) * 0.9);
+  },
+  line(x1, y1, x2, y2, col, sw = 3, o = {}) {
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" ${o.dash ? `stroke-dasharray="${o.dash}"` : ''} opacity="${o.opacity ?? 1}"/>`;
+  },
+  text(x, y, str, o = {}) {
+    const fam = o.serif ? "'Tinos'" : o.en ? "'Instrument Serif'" : "'Montserrat'";
+    const style = (o.serif || o.en) ? 'italic' : 'normal';
+    return `<text x="${x}" y="${y}" font-family="${fam}" font-style="${style}" font-weight="${o.weight || 600}" font-size="${o.size || 32}" letter-spacing="${(o.track ?? -0.03) * (o.size || 32)}" fill="${o.fill || T.ink}" text-anchor="${o.anchor || 'start'}" opacity="${o.opacity ?? 1}" ${o.tnum ? 'style="font-variant-numeric:tabular-nums"' : ''}>${esc(str)}</text>`;
+  },
+  // Label pill (Montserrat 600 28 to 36).
+  pill(x, y, str, o = {}) {
+    const size = o.size || 30;
+    mctx.font = `600 ${size}px 'Montserrat'`;
+    const w = mctx.measureText(str).width - 0.03 * size * str.length + size * 1.3;
+    const h = size * 1.75;
+    const ax = o.anchor === 'middle' ? x - w / 2 : o.anchor === 'end' ? x - w : x;
+    return `<g opacity="${o.opacity ?? 1}" transform="translate(${ax} ${y - h / 2})">
+      <rect width="${w}" height="${h}" rx="${h / 2}" fill="${o.bg || T.blue}" ${o.stroke ? `stroke="${o.stroke}" stroke-width="2"` : ''}/>
+      ${K.text(w / 2, h / 2 + size * 0.36, str, { size, weight: 600, fill: o.fill || T.paper, anchor: 'middle' })}
+    </g>`;
+  },
+  // Pop: eback scale from 0 at t0 over 0.38 s.
+  pop(lt, t0, inner, cx, cy, d = 0.38) {
+    const k = prog(lt, t0, d); if (k <= 0) return '';
+    const s = eback(k);
+    return `<g transform="translate(${cx} ${cy}) scale(${s}) translate(${-cx} ${-cy})" opacity="${clamp01(k * 3)}">${inner}</g>`;
+  },
+  fade(lt, t0, d, inner) { const k = eo(prog(lt, t0, d)); return k <= 0 ? '' : `<g opacity="${k}">${inner}</g>`; },
+  // Partial stroke drawing via dash offset.
+  draw(pathD, len, k, col, sw = 4, o = {}) {
+    return `<path d="${pathD}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${len}" stroke-dashoffset="${len * (1 - clamp01(k))}" opacity="${o.opacity ?? 1}"/>`;
+  },
+  arc(cx, cy, r, a0, a1) {
+    const p = a => [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+    const [x0, y0] = p(a0), [x1, y1] = p(a1);
+    const large = Math.abs(a1 - a0) > Math.PI ? 1 : 0;
+    return `M${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;
+  },
+  // Ger: khana lattice wall + roof + toono ring.
+  ger(cx, by, w, col, o = {}) {
+    const h = w * 0.36, roof = w * 0.30, sw = o.sw || 4, op = o.opacity ?? 1, lat = o.lattice ?? 1;
+    const x0 = cx - w / 2, x1 = cx + w / 2, wy = by - h;
+    let lattice = '';
+    const n = Math.round(w / 34);
+    for (let i = 0; i <= n; i++) {
+      const xa = x0 + (w * i) / n;
+      lattice += `M${xa} ${by} L${Math.min(x1, xa + h * 0.8)} ${by - Math.min(h, (x1 - xa) / 0.8)} `;
+      lattice += `M${xa} ${by} L${Math.max(x0, xa - h * 0.8)} ${by - Math.min(h, (xa - x0) / 0.8)} `;
+    }
+    return `<g opacity="${op}">
+      <path d="${lattice}" stroke="${col}" stroke-width="${sw * 0.55}" opacity="${0.55 * lat}" fill="none"/>
+      <rect x="${x0}" y="${wy}" width="${w}" height="${h}" fill="none" stroke="${col}" stroke-width="${sw}"/>
+      <path d="M${x0 - 8} ${wy} Q${cx} ${wy - roof * 1.25} ${x1 + 8} ${wy}" fill="${o.roofFill || 'none'}" stroke="${col}" stroke-width="${sw}"/>
+      <ellipse cx="${cx}" cy="${wy - roof * 0.6}" rx="${w * 0.07}" ry="${w * 0.028}" fill="none" stroke="${col}" stroke-width="${sw}"/>
+      <rect x="${cx - w * 0.07}" y="${by - h * 0.62}" width="${w * 0.14}" height="${h * 0.62}" fill="${o.door || 'none'}" stroke="${col}" stroke-width="${sw}"/>
+    </g>`;
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Timeline
+// ---------------------------------------------------------------------------
+let TL = [], END = 0, VID = null;
+function setVideo(v) {
+  VID = v;
+  TL = v.timeline.map((e, i) => ({ ...v.shots[e.shot], ...e, name: e.shot }));
+  TL.forEach((s, i) => { s.dur = (i < TL.length - 1 ? TL[i + 1].at : v.end) - s.at; });
+  END = v.end;
+}
+function shotAt(t) { let i = 0; while (i < TL.length - 1 && t >= TL[i + 1].at) i++; return i; }
+
+function cameraWrap(sh, lt, inner) {
+  const c = sh.cam || { type: 'push' };
+  if (c.type === 'none') return inner;
+  const k = eio(lt / sh.dur);
+  let s = 1, tx = 0, ty = 0;
+  const fx = c.fx ?? 540, fy = c.fy ?? 1060;
+  if (c.type === 'push') s = lerp(c.from ?? 1, c.to ?? 1.04, k);
+  if (c.type === 'pull') s = lerp(c.from ?? 1.06, c.to ?? 1.0, k);
+  if (c.type === 'truck') tx = lerp(c.from ?? 0, c.to ?? -40, k);
+  if (c.type === 'tilt') ty = lerp(c.from ?? 0, c.to ?? -40, k);
+  return `<g transform="translate(${tx} ${ty}) translate(${fx} ${fy}) scale(${s}) translate(${-fx} ${-fy})">${inner}</g>`;
+}
+
+function frameHTML(sh, t, idx) {
+  const lt = t - sh.at;
+  const reg = sh.reg;
+  const R = REG[reg];
+  let html = bgHTML(reg, lt, idx);
+  if (sh.svg) {
+    html += `<svg class="scene" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${cameraWrap(sh, lt, sh.svg(lt, R, t))}</svg>`;
+  }
+  let cap = capsHTML(sh, t, reg);
+  if (sh.html) cap += sh.html(lt, R, t);
+  if (sh.src) {
+    const k = eo(prog(lt, sh.srcAt ?? 0.3, 0.4)) * (1 - clamp01((lt - (sh.dur - 5 * F)) / (5 * F)));
+    cap += `<div class="src" style="top:${sh.srcY ?? 1466}px;color:${R.src};opacity:${(k * 0.9).toFixed(3)}">${esc(sh.src)}</div>`;
+  }
+  html += `<div class="cap">${cap}</div>`;
+  return html;
+}
+
+// Khadag ribbon: a silk band sweeps bottom left to top right and leaves the khadag background behind.
+function halfPlanePoly(e) {
+  // keep points with s(x,y) = (x + (H - y)) / sqrt2 <= e
+  const pts = [[0, 0], [W, 0], [W, H], [0, H]];
+  const s = ([x, y]) => (x + (H - y)) / Math.SQRT2 - e;
+  const out = [];
+  for (let i = 0; i < 4; i++) {
+    const a = pts[i], b = pts[(i + 1) % 4];
+    const sa = s(a), sb = s(b);
+    if (sa <= 0) out.push(a);
+    if ((sa <= 0) !== (sb <= 0)) { const k = sa / (sa - sb); out.push([a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k]); }
+  }
+  return out;
+}
+function ribbonSVG(k) {
+  const L = (W + H) / Math.SQRT2, bw = 340;
+  const e = lerp(-bw, L + 40, k);
+  // band between e and e + bw, drawn as a rotated rect
+  const cx = 0, cy = H;
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="position:absolute;left:0;top:0">
+    <defs><linearGradient id="silk" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="${T.blue}"/><stop offset="0.55" stop-color="#3D69D3"/>
+      <stop offset="0.82" stop-color="${T.blueLight}"/><stop offset="1" stop-color="${T.bluePale}" stop-opacity="0.9"/>
+    </linearGradient></defs>
+    <g transform="translate(${cx} ${cy}) rotate(-45)">
+      <rect x="${e}" y="-2400" width="${bw}" height="4800" fill="url(#silk)"/>
+      <rect x="${e + bw - 3}" y="-2400" width="3" height="4800" fill="${T.paper}" opacity="0.35"/>
+    </g></svg>`;
+}
+
+const A = document.getElementById('A'), B = document.getElementById('B'), Rr = document.getElementById('R');
+const G = document.getElementById('grain'), gctx = G.getContext('2d');
+const TILES = [];
+(function makeGrain() {
+  let seed = 1234567;
+  const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  for (let k = 0; k < 12; k++) {
+    const img = gctx.createImageData(540, 960);
+    for (let i = 0; i < img.data.length; i += 4) {
+      const v = 128 + ((rnd() + rnd() + rnd()) / 3 - 0.5) * 2 * 150;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255;
+    }
+    TILES.push(img);
+  }
+})();
+
+function renderAt(t) {
+  const i = shotAt(t), sh = TL[i];
+  const lt = t - sh.at;
+  const rib = sh.ribbon && i > 0 ? sh.ribbon : 0;
+  if (rib && lt < rib) {
+    const k = eio(lt / rib);
+    const prev = TL[i - 1];
+    A.innerHTML = frameHTML(prev, t, 'a');
+    B.innerHTML = frameHTML(sh, t, 'b');
+    const L = (W + H) / Math.SQRT2;
+    const e = lerp(-340, L + 40, k);
+    const poly = halfPlanePoly(e);
+    B.style.clipPath = poly.length ? `polygon(${poly.map(p => `${p[0].toFixed(1)}px ${p[1].toFixed(1)}px`).join(',')})` : 'polygon(0 0,0 0,0 0)';
+    B.style.display = '';
+    Rr.innerHTML = ribbonSVG(k);
+  } else {
+    A.innerHTML = frameHTML(sh, t, 'a');
+    B.style.display = 'none'; B.innerHTML = ''; B.style.clipPath = '';
+    Rr.innerHTML = '';
+  }
+  const frame = Math.round(t * FPS);
+  gctx.putImageData(TILES[Math.floor(frame / 4) % TILES.length], 0, 0);
+  G.style.opacity = REG[sh.reg].grain;
+}
+
+// Sound cues: sub hit on cuts into ink or khadag, silk swish + sub on the ribbon, plus per-shot effects.
+function collectCues() {
+  const cues = [];
+  TL.forEach((s, i) => {
+    if (i > 0) {
+      const prev = TL[i - 1];
+      if (s.ribbon) { cues.push({ type: 'swish', t: s.at }); cues.push({ type: 'sub', t: s.at + s.ribbon * 0.8 }); }
+      else if ((s.reg === 'ink' || s.reg === 'khadag') && prev.reg !== s.reg) cues.push({ type: 'sub', t: s.at });
+    }
+    if (s.sfxFn) for (const [type, lt, gain] of s.sfxFn()) cues.push({ type, t: s.at + lt, gain: gain ?? 1 });
+  });
+  return { end: END, cues: cues.sort((a, b) => a.t - b.t), shots: TL.map(s => ({ name: s.name, reg: s.reg, at: s.at, dur: s.dur, ribbon: s.ribbon || 0 })) };
+}
+
+// ---------------------------------------------------------------------------
+// Built-in shots
+// ---------------------------------------------------------------------------
+const LIB = {
+  // End card, 2.5 s: wordmark, Mongolian name, hairline, promise.
+  endcard: {
+    reg: 'khadag', cam: { type: 'none' },
+    html(lt) {
+      const a = k => k.toFixed(3);
+      const k0 = eo(prog(lt, 0.10, 0.35)), k1 = eo(prog(lt, 0.30, 0.35));
+      const hl = eio(prog(lt, 0.55, 0.5)), k2 = eo(prog(lt, 0.75, 0.35)), k3 = eo(prog(lt, 1.0, 0.4));
+      // Official AISM wordmark, single-colour paper reversal on khadag.
+      const mw = 540, mh = mw * 388 / 1462, ms = lerp(0.94, 1, eback(prog(lt, 0.10, 0.40)));
+      const push = lerp(1, 1.025, eio(lt / 2.5));
+      return `<div style="position:absolute;left:0;top:0;width:${W}px;height:${H}px;transform:scale(${push.toFixed(4)});transform-origin:540px 1000px">
+        <img src="assets/aism_wordmark_paper.png" style="position:absolute;left:${540 - mw / 2}px;top:${872 - mh}px;width:${mw}px;height:${mh}px;opacity:${a(k0)};transform:scale(${ms});transform-origin:50% 100%">
+        <div class="ln" style="left:0;width:${W}px;text-align:center;top:${928 - 30}px;font-family:Montserrat;font-weight:500;font-size:38px;letter-spacing:-0.02em;color:${T.bluePale};opacity:${a(k1)}">Монголын Хиймэл Оюуны Сургууль</div>
+        <div style="position:absolute;left:${540 - 160 * hl}px;top:990px;width:${320 * hl}px;height:2px;background:${T.paper};opacity:0.7"></div>
+        <div class="ln lead" style="left:0;width:${W}px;text-align:center;top:${1092 - 46}px;font-size:60px;color:${T.paper};opacity:${a(k2)}">Ирээдүйг эндээс бүтээ.</div>
+        <div class="ln lead en" style="left:0;width:${W}px;text-align:center;top:${1160 - 40}px;font-size:52px;color:${T.bluePale};opacity:${a(k3)}">Build the future, from here.</div></div>`;
+    },
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Boot
+// ---------------------------------------------------------------------------
+window.READY = (async () => {
+  const probe = 'AaӨөҮү₮ 0123456789 Монгол';
+  await Promise.all([
+    document.fonts.load(`500 38px Montserrat`, probe), document.fonts.load(`600 30px Montserrat`, probe),
+    document.fonts.load(`800 120px Montserrat`, probe), document.fonts.load(`italic 400 58px Tinos`, probe),
+    document.fonts.load(`italic 400 58px 'Instrument Serif'`, 'Build the future, from here.'),
+  ]);
+  await document.fonts.ready;
+  const v = new URLSearchParams(location.search).get('v');
+  const load = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = `${src}?${Date.now()}`; s.onload = res; s.onerror = () => rej(new Error('load ' + src)); document.head.appendChild(s); });
+  if (v) {
+    if (v !== 'test') { await load('videos/common.js'); await load(`videos/${v}_words.js`); }
+    await load(`videos/${v}.js`);
+  }
+  return { end: END, fonts: [...document.fonts].filter(f => f.status === 'loaded').map(f => f.family + ' ' + f.weight + ' ' + f.style).length };
+})();
+</script>
+</body>
+</html>
